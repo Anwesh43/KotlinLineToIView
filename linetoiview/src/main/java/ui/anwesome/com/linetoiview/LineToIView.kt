@@ -93,7 +93,7 @@ class LineToIView (ctx : Context) : View(ctx) {
         fun draw(canvas : Canvas, paint : Paint) {
             val w : Float = canvas.width.toFloat()
             val h : Float = canvas.height.toFloat()
-            val size : Float = Math.min(w,h)/10
+            val size : Float = Math.min(w,h)/5
             val updatedSize : Float = (size/2) * state.scales[0]
             paint.color = Color.parseColor("#4527A0")
             paint.strokeCap = ROUND
@@ -102,8 +102,9 @@ class LineToIView (ctx : Context) : View(ctx) {
             canvas.translate(w/2, h/2)
             canvas.rotate(90f * state.scales[2])
             for (i in 0..1) {
-                canvas.drawLine(0f, 0f, size * state.scales[1], 0f, paint)
-                canvas.drawLine(0f, -updatedSize, 0f, updatedSize, paint)
+                val x : Float = size * state.scales[1] * (1 - 2 * i)
+                canvas.drawLine(0f, 0f, x, 0f, paint)
+                canvas.drawLine(x, -updatedSize, x, updatedSize, paint)
             }
             canvas.restore()
         }
