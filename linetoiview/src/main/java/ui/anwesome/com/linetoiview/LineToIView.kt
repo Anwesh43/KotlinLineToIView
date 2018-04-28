@@ -32,22 +32,32 @@ class LineToIView (ctx : Context) : View(ctx) {
         return true
     }
 
-    data class LTIState (var prevScale : Float = 0f, var dir : Float = 0f, var j : Int = 0) {
+    data class LTIState (var prevScale : Float = 0f, var dir : Float = 0f, var j : Int = 0, var delay : Int = 0) {
 
         val scales : Array<Float> = arrayOf(0f, 0f, 0f)
 
-        fun update(stopcb : (Float) -> Unit) {
-            scales[j] += 0.1f * dir
-            if (Math.abs(scales[j] - prevScale) > 1) {
-                scales[j] = prevScale + dir
-                j += dir.toInt()
-                if (j == scales.size || j == -1) {
-                    j -= dir.toInt()
-                    dir = 0f
-                    prevScale = scales[j]
-                    stopcb(prevScale)
-                }
+        val MAX_DELAY = 10
 
+        fun update(stopcb : (Float) -> Unit) {
+
+            if (delay == 0) {
+                scales[j] += 0.1f * dir
+                if (Math.abs(scales[j] - prevScale) > 1) {
+                    scales[j] = prevScale + dir
+                    delay++
+                }
+            } else {
+                delay++
+                if (delay == MAX_DELAY) {
+                    j += dir.toInt()
+                    delay = 0
+                    if (j == scales.size || j == -1) {
+                        j -= dir.toInt()
+                        dir = 0f
+                        prevScale = scales[j]
+                        stopcb(prevScale)
+                    }
+                }
             }
         }
 
@@ -93,7 +103,7 @@ class LineToIView (ctx : Context) : View(ctx) {
         fun draw(canvas : Canvas, paint : Paint) {
             val w : Float = canvas.width.toFloat()
             val h : Float = canvas.height.toFloat()
-            val size : Float = Math.min(w,h)/5
+            val size : Float =  2 * Math.min(w,h) / 5
             val updatedSize : Float = (size/2) * state.scales[0]
             paint.color = Color.parseColor("#4527A0")
             paint.strokeCap = ROUND
