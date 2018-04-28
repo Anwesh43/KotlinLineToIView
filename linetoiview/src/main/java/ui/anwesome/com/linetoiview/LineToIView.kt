@@ -55,4 +55,33 @@ class LineToIView (ctx : Context) : View(ctx) {
         }
     }
 
+    data class LTIAnimator (var view : View, var animated : Boolean = false) {
+
+        fun update(updatecb : () -> Unit) {
+            if (animated) {
+                updatecb()
+                try {
+                    Thread.sleep(50)
+                    view.invalidate()
+                }
+                catch (ex : Exception) {
+
+                }
+            }
+        }
+
+        fun start() {
+            if (!animated) {
+                animated = true
+                view.postInvalidate()
+            }
+        }
+
+        fun stop() {
+            if (animated) {
+                animated = false
+            }
+        }
+    }
+
 }
