@@ -7,6 +7,7 @@ package ui.anwesome.com.linetoiview
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint.Cap.*
 import android.view.View
 import android.view.MotionEvent
@@ -30,7 +31,7 @@ class LineToIView (ctx : Context) : View(ctx) {
 
     data class LTIState (var prevScale : Float = 0f, var dir : Float = 0f, var j : Int = 0) {
 
-        private val scales : Array<Float> = arrayOf(0f, 0f, 0f)
+        val scales : Array<Float> = arrayOf(0f, 0f, 0f)
 
         fun update(stopcb : (Float) -> Unit) {
             scales[j] += 0.1f * dir
@@ -81,6 +82,35 @@ class LineToIView (ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class LineToI (var i : Int, val state : LTIState = LTIState()) {
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val size : Float = Math.min(w,h)/10
+            val updatedSize : Float = (size/2) * state.scales[0]
+            paint.color = Color.parseColor("#4527A0")
+            paint.strokeCap = ROUND
+            paint.strokeWidth = size/6
+            canvas.save()
+            canvas.translate(w/2, h/2)
+            canvas.rotate(90f * state.scales[2])
+            for (i in 0..1) {
+                canvas.drawLine(0f, 0f, size * state.scales[1], 0f, paint)
+                canvas.drawLine(0f, -updatedSize, 0f, updatedSize, paint)
+            }
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
         }
     }
 
