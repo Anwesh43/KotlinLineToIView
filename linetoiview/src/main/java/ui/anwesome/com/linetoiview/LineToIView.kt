@@ -4,6 +4,7 @@ package ui.anwesome.com.linetoiview
  * Created by anweshmishra on 28/04/18.
  */
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
 import android.graphics.Canvas
@@ -137,6 +138,13 @@ class LineToIView (ctx : Context) : View(ctx) {
                 animator.start()
             }
         }
+    }
 
+    companion object {
+        fun create(activity : Activity) : LineToIView {
+            val view : LineToIView = LineToIView(activity)
+            activity.setContentView(view)
+            return view
+        }
     }
 }
