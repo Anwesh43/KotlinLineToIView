@@ -114,4 +114,27 @@ class LineToIView (ctx : Context) : View(ctx) {
         }
     }
 
+    data class LTIRenderer (var view : LineToIView) {
+
+        private val lti : LineToI = LineToI(0)
+
+        private val animator : LTIAnimator = LTIAnimator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            lti.draw(canvas, paint)
+            animator.update {
+                lti.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            lti.startUpdating {
+                animator.start()
+            }
+        }
+
+    }
 }
