@@ -1,5 +1,6 @@
 package ui.anwesome.com.kotlinlinetoiview
 
+import android.content.pm.ActivityInfo
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.WindowManager
@@ -9,6 +10,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         LineToIView.create(this)
         fullScreen()
     }
@@ -17,4 +19,5 @@ class MainActivity : AppCompatActivity() {
 fun MainActivity.fullScreen() {
     supportActionBar?.hide()
     window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 }
